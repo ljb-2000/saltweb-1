@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <link rel="icon" href="/static/img/favicon.ico">
+    <title>SaltWeb</title>
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/jquery-ui.css" rel="stylesheet">
+    <link href="/static/css/customize.css" rel="stylesheet">
+  </head>
+
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <!-- nav left top -->
+        <div class="col-md-2 nav_left">
+            <div class="nav_left_top">
+                <img class="img-circle" src="/static/img/head.jpg" width="80px" height="80px">
+                <p>huangchao 运维组</p>
+				<p>admin</p>
+            </div>
+			<!-- nav left -->
+			<ul class="nav nav-pills nav-stacked">
+				<li role='presentation' class="active"><a href="#">Dashborad</a></li>
+			</ul>
+			<ul class="nav nav-sidebar">
+				<li>
+				 <a href="#demo2" data-toggle="collapse" class="list-group-item"><strong>资产管理</strong></a>
+				 {% block nav2 %}
+				 <div id="demo2" class="collapse list-group">
+				 {% endblock %}
+				  <a href="/asset/host_list" class="list-group-item"><small>主机资源</small></a>
+				  <a href="/asset/network_list" class="list-group-item"><small>网络设备资源</small></a>
+				  <a href="/asset/storage_list" class="list-group-item"><small>存储设备资源</small></a>
+				 </div> 
+				</li>
+				<li>
+				 <a href="#demo3" data-toggle="collapse" class="list-group-item"><strong>装机中心</strong></a>
+				 {% block nav3 %}
+				 <div id="demo3" class="collapse list-group">
+				 {% endblock %}
+				  <a href="/cobbler/cobbler_install" class="list-group-item"><small>装机参数</small></a>
+				  <a href="/cobbler/cobbler_list" class="list-group-item"><small>cobbler安装列表</small></a>
+				  <a href="/cobbler/cobbler_kvm_install" class="list-group-item"><small>KVM虚拟机安装</small></a>
+				 </div> 
+				</li>
+				<li>
+				 <a href="#demo4" data-toggle="collapse" class="list-group-item"><strong>salt key管理</strong></a>
+				 {% block nav4 %}
+				 <div id="demo4" class="collapse list-group">
+				 {% endblock %}
+				  <a href="/saltstack/accept_key" class="list-group-item"><small>已认证KEY</small></a>
+				  <a href="/saltstack/unaccept_key" class="list-group-item"><small>未认证KEY</small></a>
+				 </div> 
+				</li>
+				<li>
+				 <a href="#demo5" data-toggle="collapse" class="list-group-item"><strong>文件管理</strong></a>
+				 {% block nav5 %}
+				 <div id="demo5" class="collapse list-group">
+				 {% endblock %}
+				  <a href="/file/file_upload" class="list-group-item"><small>文件上传</small></a>
+				  <a href="/file/file_upload_list" class="list-group-item"><small>文件上传列表</small></a>
+				  <a href="/file/file_list" class="list-group-item"><small>远程文件目录浏览</small></a>
+				  <a href="/file/file_download_list" class="list-group-item"><small>文件下载列表</small></a>
+				  <a href="/file/file_send" class="list-group-item"><small>文件分发</small></a>
+				 </div> 
+				</li>
+				<li>
+				 <a href="#demo7" data-toggle="collapse" class="list-group-item"><strong>运维审计</strong></a>
+				 {% block nav7 %}
+				 <div id="demo7" class="collapse list-group">
+				 {% endblock %}
+				  <a href="/audit/command" class="list-group-item"><small>命令操作记录</small></a>
+				  <a href="/audit/kvm_install" class="list-group-item"><small>KVM安装记录</small></a>
+				 </div> 
+				</li>
+			  </ul>
+        </div>
+        <!-- context right -->
+        <div class="col-md-10 context">
+		<nav class="navbar navbar-default">
+		 <div class="container-fluid">
+		  <div class="navbar-header">
+		   <a class="navbar-brand" href="#">
+		    <img alt="SALT" src="">
+		   </a>
+		  </div>
+		  <p class="navbar-text">欢迎使用SaltWeb</p>
+		  <p class="navbar-text navbar-right">Log Out</p>
+		 </div>
+		</nav>
+
+		<!-- footerr -->
+        <div class="panel-footer footer">
+            <strong>Copyright</strong> xinxindai.com Organization &copy; 2014-2015
+        </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="/static/js/jquery-1.11.3.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
+    <script src="/static/js/jquery-ui.js"></script>
+    <script src="/static/js/jquery.validate.min.js"></script>
+    <script src="/static/js/echarts.js"></script>
+  </body>
+</html>
