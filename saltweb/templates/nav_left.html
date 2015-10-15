@@ -1,0 +1,14 @@
+<ul class="nav nav-pills nav-stacked">
+    <li role='presentation' class="active"><a href="#">Dashborad</a></li>
+</ul>
+<ul class="nav nav-sidebar">
+    <li>
+        <a href="#kvm-manager" data-toggle="collapse" class="list-group-item"><strong>KVM管理</strong></a>
+        {% block nav1 %}
+        <div id="kvm-manager" class="collapse list-group">
+        {% endblock %}
+            <a href="/kvm_manager/add_host" class="list-group-item"><small>添加宿主机</small></a>
+            <a href="/kvm_manager/host_list" class="list-group-item"><small>宿主机列表</small></a>
+        </div>
+    </li>
+  </ul>

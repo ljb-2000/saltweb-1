@@ -1,0 +1,47 @@
+{% extends 'index.html' %}
+{% block context %}
+{% if error %}
+<div class="alert alert-danger" role="alert">{{error}}</div>
+{% endif %}
+{% if ret %}
+<div class="alert alert-success" role="alert">{{ret}}</div>
+{% endif %}
+<div class="panel panel-default">
+    <div class="panel-heading">添加KVM宿主机</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="saltkey" class="col-md-2 control-label">saltkey</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="saltkey" name="saltkey" placeholder="请输入saltkey">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ip" class="col-md-2 control-label">Hostname</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="hostname" name="hostname" placeholder="请输入hostname">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="port" class="col-md-2 control-label">IP</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="ip" name="ip" placeholder="请输入IP地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="content" class="col-md-2 control-label">备注</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="comment" name="comment" placeholder="备注">
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="reset" class="btn btn-success">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

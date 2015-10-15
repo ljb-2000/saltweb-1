@@ -1,0 +1,14 @@
+<div class="pull-left">
+<small>总共</small><span class="badge">{{pt}}</span><small>条数据,当前第</small><span class="badge">{{page}}</span><small>页,总共</small><span class="badge">{{pn}}</span><small>页</small>
+</div>
+<nav>
+  <ul class="pagination pagination-sm pull-right">
+    <li><a href="?page=1">首页</a></li>
+    <li><a href="?page={{ppn}}">上一页</a></li>
+{% for pagenum in pr %}
+    <li><a href="?page={{pagenum}}">{{pagenum}}</a></li>
+{% endfor %}
+    <li><a href="?page={{npn}}">下一页</a></li>
+    <li><a href="?page={{pn}}">尾页</a></li>
+  </ul>
+</nav>

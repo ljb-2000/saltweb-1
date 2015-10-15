@@ -21,4 +21,5 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index),
     url(r'^asset/', include('asset.urls')),
+    url(r'^kvm_manager/', include('kvm_manager.urls')),
 ]
