@@ -1,0 +1,72 @@
+{% extends 'index.html' %}
+{% block context %}
+{% if error %}
+<div class="alert alert-danger" role="alert">{{error}}</div>
+{% endif %}
+{% if result %}
+<div class="alert alert-success" role="alert">
+ <p>{{result}}</p>
+ 添加记录: <a href="/audit/cobbler_log/">http://172.16.30.219/audit/cobbler_log/</a>
+</div>
+{% endif %}
+<div class="panel panel-default">
+    <div class="panel-heading">装机参数</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="POST">
+            <div class="form-group">
+                <label for="hostname" class="col-md-2 control-label">主机名</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="hostname" name="hostname" placeholder="请填写主机名">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="interface" class="col-md-2 control-label">Interface</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="interface" name="interface" placeholder="eth0">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="ip" class="col-md-2 control-label">IP地址</label>
+                <div class="col-md-10">                    
+		    <input type="text" class="form-control" id="ip" name="ip" placeholder="请输入ip地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="gateway" class="col-md-2 control-label">网关</label>
+                <div class="col-md-10">                                 
+		    <input type="text" class="form-control" id="gateway" name="gateway" placeholder="请输入网关">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="dns" class="col-md-2 control-label">DNS</label>
+                <div class="col-md-10">                                        
+                    <input type="text" class="form-control" id="dns" name="dns" placeholder="请输入DNS">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="mac" class="col-md-2 control-label">MAC地址</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="mac" name="mac" placeholder="请输入MAC地址">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="profile" class="col-md-2 control-label">cobbler_profile</label>
+                <div class="col-md-10">
+		    <select class="form-control" id="profile" name="profile">
+			{% for profile in profile_list %}
+			<option>{{ profile }}</option>
+			{% endfor %}
+		    </select>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="reset" class="btn btn-success">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

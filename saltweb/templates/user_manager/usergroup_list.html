@@ -1,0 +1,108 @@
+{% extends 'index.html' %}
+{% load saltwebtags %}
+{% block context %}
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">用户组列表</div>
+    <div class="panel-body">
+        <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" name="search" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <table class="table table-bordered table-hover">
+            <th>用户组名</th>
+            <th>用户数</th>
+            <th>备注</th>
+            <th>操作</th>
+            {% for group in pl %}
+            <tr>
+                <td class="groupname">{{ group.name }}</td>
+                <td>{{ group.user_set.all|count_user }}</td>
+                <td>{{ group.comment }}</td>
+                <td>
+                    <a href="/user_manager/usergroup_edit/?gid={{ group.id }}" class="btn btn-primary btn-xs">编辑</a>
+                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
+		    <button type="button" class="btn btn-success btn-xs info" data-toggle="modal" data-target="#myModal">组成员详情</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+{% include "paginator.html" %}
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">组成员列表</h4>
+      </div>
+      <div class="modal-body">
+        <div id="info_list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end Modal-->
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('button.del').on('click',function(e){
+		var groupname = $(this).parent().parent().find('td.groupname').text();
+		var currentTr = $(this).parent().parent();
+		$.ajax({
+			type: 'POST',
+			url: '/user_manager/usergroup_del_ajax/',
+			timeout: 1000,
+			data:{
+				groupname : groupname
+			},
+			success: function(data){
+				$("#ret").attr('class','alert alert-success');
+				$("#ret").text(data);
+				currentTr.remove();
+			},
+           		error: function(xhr,errorText,errorStatus){
+                    		alert(xhr.status+':'+xhr.statusText);
+           		},
+			complete: function(XMLHttpRequest,status){
+				if (status == 'timeout'){
+					alert('删除请求超时');
+				}
+			}
+		})
+	})
+	$('button.info').on('click',function(){
+                var groupname = $(this).parent().parent().find('td.groupname').text();
+                $.ajax({
+                        type: 'GET',
+                        url: '/user_manager/g_user_list_ajax/',
+                        timeout: 1000,
+			dataType: 'json',
+                        data:{
+                                groupname : groupname
+                        },
+                        success: function(data){
+				var html = '';
+				$.each(data,function(k,v){
+					html += '<div id=info_list><p>'+v+'</p></div>';
+				});
+				$('#info_list').html(html);
+                        },
+                        error:function(xhr,errorText,errorStatus){
+                                alert(xhr.status+':'+xhr.statusText);
+                        },
+                        complete: function(XMLHttpRequest,status){
+                                if (status == 'timeout'){
+                                        alert('删除请求超时');
+                                }
+                        }
+               })
+	})
+})
+</script>
+{% endblock %}

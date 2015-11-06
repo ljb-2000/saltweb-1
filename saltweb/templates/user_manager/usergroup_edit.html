@@ -1,0 +1,62 @@
+{% extends 'index.html' %}
+{% block context %}
+<div class="panel panel-default">
+    <div class="panel-heading">编辑用户组</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="groupname" class="col-md-2 control-label">组名</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="groupname" name="groupname" value={{result.name}}>
+                </div>
+            </div>
+	    <div class="form-group">
+		<label class="col-md-2 control-label">用户</label>
+		<div class="col-md-4">
+			未添加用户
+			<select multiple class="form-control" name="not_in_group" id="not_in_group" style="height: 150px">
+			{% for not_in_group_user in not_in_group_users %}
+				<option value={{not_in_group_user.username}}>{{not_in_group_user.username}}</option>
+			{% endfor %}
+			</select>
+		</div>
+                <div class="col-md-4">
+                        已添加用户
+                        <select multiple class="form-control" name="in_group" id="in_group" style="height: 150px">
+                        {% for in_group_user in in_group_users %}
+                                <option value={{in_group_user.username}}>{{in_group_user.username}}</option>
+                        {% endfor %}
+                        </select>
+                </div>
+	    </div>
+            <div class="form-group">
+                <label for="comment" class="col-md-2 control-label">备注</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="comment" name="comment" value={{result.comment}}>
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="reset" class="btn btn-success">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('#not_in_group').dblclick(function(){
+		var $options = $('option:selected',this);
+		$options.appendTo("#in_group");
+	})
+        $('#in_group').dblclick(function(){
+                var $options = $('option:selected',this);
+                $options.appendTo("#not_in_group");
+        })
+})
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% block context %}
+{% load saltwebtags %}
+	{% if error %}
+		<div class="alert alert-danger" role="alert">{{error}}</div>
+	{% endif %}
+	<table class="table table-bordered table-hover">
+	{% if results %}
+	{% for k,v in results.items %}
+	<tr>
+		{% ifequal k 'return' %}
+		<td>{{k}}</td>
+		<td><pre>{{v}}</pre></td>
+		{% else %}
+		<td>{{k}}</td>
+		<td>{{v}}</td>
+		{% endifequal %}
+	</tr>
+	{% endfor %}
+	{% endif %}
+	{% if results_dict %}
+        <tr>
+                <td>tgt_type</td>
+                <td>{{results_dict.tgt_type}}</td>
+        </tr>
+        <tr>
+                <td>jid</td>
+                <td>{{results_dict.jid}}</td>
+        </tr>
+        <tr>
+                <td>return</td>
+                <td>
+			<table class="table table-bordered table-hover">
+				<th>名称</th>
+				<th>comment</th>
+				<th>start_time</th>
+				<th>result</th>
+				<th>changes</th>
+				{% for k,v in results_dict.return.items %}
+				<tr>
+					<td>{{k}}</td>
+					<td>{{v.comment}}</td>
+					<td>{{v.start_time}}</td>
+					<td>{{v.result}}</td>
+					<td>
+					{{v.changes}}
+					</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</td>
+        </tr>
+        <tr>
+                <td>tgt</td>
+                <td>{{results_dict.tgt}}</td>
+        </tr>
+        <tr>
+                <td>schedule</td>
+                <td>{{results_dict.schedule}}</td>
+        </tr>
+        <tr>
+                <td>cmd</td>
+                <td>{{results_dict.cmd}}</td>
+        </tr>
+        <tr>
+                <td>pid</td>
+                <td>{{results_dict.pid}}</td>
+        </tr>
+        <tr>
+                <td>tgt_type</td>
+                <td>{{results_dict.tgt_type}}</td>
+        </tr>
+	{% endif %}
+	</table>
+{% endblock %}
+

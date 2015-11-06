@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('saltkey', models.CharField(max_length=200)),
                 ('hostname', models.CharField(max_length=100)),
                 ('ip', models.IPAddressField(unique=True)),
-                ('comment', models.TextField(max_length=500, null=True, blank=True)),
+                ('comment', models.TextField(max_length=500, blank=True)),
             ],
         ),
     ]

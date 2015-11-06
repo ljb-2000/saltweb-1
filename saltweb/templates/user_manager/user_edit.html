@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+{% block context %}
+<div class="panel panel-default">
+    <div class="panel-heading">编辑用户信息</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="username" class="col-md-2 control-label">用户名</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="username" name="username" value={{result.username}} readonly>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email" class="col-md-2 control-label">Email</label>
+                <div class="col-md-10">
+                    <input type="email" class="form-control" id="email" name="email" value={{result.email}}>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="password" class="col-md-2 control-label">密码</label>
+                <div class="col-md-10">
+                    <input type="password" class="form-control" id="password" name="password" placeholder="为空则密码不变">
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-md-2 control-label">角色</label>
+                <div class="col-md-10">
+                    <select class="form-control" name="role">
+			{% ifequal result.role 'SU' %}
+                        <option value="SU" selected>超级管理员</option>
+                        <option value="CU">普通用户</option>
+			{% else %}
+			<option value="SU">超级管理员</option>
+                        <option value="CU" selected>普通用户</option>
+			{% endifequal %}
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="control-label col-md-2">是否激活</label>
+                <div class="col-md-10">
+		    {% if result.is_active %}
+                    <label class="radio-inline">
+                        <input type="radio" name="is_active" value="1" checked="checked">是
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="is_active" value="0">否
+                    </label>
+		    {% else %}
+                    <label class="radio-inline">
+                        <input type="radio" name="is_active" value="1">是
+                    </label>
+                    <label class="radio-inline">
+                        <input type="radio" name="is_active" value="0" checked="checked">否
+                    </label>
+		    {% endif %}
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="reset" class="btn btn-success">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

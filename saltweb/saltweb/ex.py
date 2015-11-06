@@ -1,5 +1,4 @@
 #!/usr/bin/python
 
 from api import *
-
-print SALTAPI.salt_mod('v6_pro_stage001','virt.vm_state')
+print SALTAPI.salt_mod('test_v6_lvs0*','cp.get_file',['salt://a','/tmp/a'])

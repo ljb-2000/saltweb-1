@@ -16,15 +16,15 @@
             <th>ip</th>
             <th>备注</th>
             <th>操作</th>
-            {% for host in hosts %}
+            {% for host in pl %}
             <tr>
                 <td>{{ host.saltkey }}</td>
                 <td>{{ host.hostname }}</td>
                 <td class="ip">{{ host.ip }}</td>
                 <td>{{ host.comment }}</td>
                 <td>
-                    <a href="/kvm_manager/libvirt_manager?saltkey={{ host.saltkey }}" class="btn btn-primary btn-xs">管理</a>
-                    <button type="button" class="btn btn-success btn-xs edit">编辑</button>
+                    <a href="/kvm_manager/libvirt_manager/?saltkey={{ host.saltkey }}" class="btn btn-primary btn-xs">管理</a>
+                    <a href="/kvm_manager/host_edit/?ip={{ host.ip }}" class="btn btn-success btn-xs">编辑</a>
                     <button type="button" class="btn btn-danger btn-xs del">删除</button>
                 </td>
             </tr>
@@ -36,7 +36,7 @@
 {% endblock %}
 {% block js %}
 <script>
-    $(function(){
+$(function(){
 	$('button.del').on('click',function(e){
 		var ip = $(this).parent().parent().find('td.ip').text();
 		var currentTr = $(this).parent().parent();
@@ -62,6 +62,6 @@
 			}
 		})
 	})
-    })
+})
 </script>
 {% endblock %}

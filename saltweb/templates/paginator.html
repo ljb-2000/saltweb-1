@@ -3,12 +3,12 @@
 </div>
 <nav>
   <ul class="pagination pagination-sm pull-right">
-    <li><a href="?page=1">首页</a></li>
-    <li><a href="?page={{ppn}}">上一页</a></li>
+    <li><a href="?page=1&search={{search}}">首页</a></li>
+    <li><a href="?page={{ppn}}&search={{search}}">上一页</a></li>
 {% for pagenum in pr %}
-    <li><a href="?page={{pagenum}}">{{pagenum}}</a></li>
+    <li><a href="?page={{pagenum}}&search={{search}}">{{pagenum}}</a></li>
 {% endfor %}
-    <li><a href="?page={{npn}}">下一页</a></li>
-    <li><a href="?page={{pn}}">尾页</a></li>
+    <li><a href="?page={{npn}}&search={{search}}">下一页</a></li>
+    <li><a href="?page={{pn}}&search={{search}}">尾页</a></li>
   </ul>
 </nav>

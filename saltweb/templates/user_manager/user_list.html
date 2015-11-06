@@ -1,0 +1,77 @@
+{% extends 'index.html' %}
+{% load saltwebtags %}
+{% block context %}
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">用户列表</div>
+    <div class="panel-body">
+        <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" name="search" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <table class="table table-bordered table-hover">
+            <th>用户名</th>
+            <th>用户组</th>
+            <th>角色</th>
+            <th>邮箱</th>
+            <th>是否激活</th>
+            <th>注册时间</th>
+            <th>最后登入时间</th>
+            <th>操作</th>
+            {% for user in pl %}
+            <tr>
+                <td class="username">{{ user.username }}</td>
+                <td>{{ user.group.all|group_str }}</td>
+                <td>{{ user.role|role_str }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.is_active|bool2str }}</td>
+                <td>{{ user.date_joined|format_time }}</td>
+		{% if user.last_login %}
+                <td>{{ user.last_login|format_time }}</td>
+		{% else %}
+		<td>未登入</td>
+		{% endif %}
+                <td>
+                    <a href="/user_manager/user_edit/?id={{ user.id }}" class="btn btn-success btn-xs">编辑</a>
+                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+{% include "paginator.html" %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('button.del').on('click',function(e){
+		var username = $(this).parent().parent().find('td.username').text();
+		var currentTr = $(this).parent().parent();
+		$.ajax({
+			type: 'POST',
+			url: '/user_manager/user_del_ajax/',
+			timeout: 1000,
+			data:{
+				username : username
+			},
+			success: function(data){
+				$("#ret").attr('class','alert alert-success');
+				$("#ret").text(data);
+				currentTr.remove();
+			},
+           		error: function(xhr,errorText,errorStatus){
+                    		alert(xhr.status+':'+xhr.statusText);
+           		},
+			complete: function(XMLHttpRequest,status){
+				if (status == 'timeout'){
+					alert('删除请求超时');
+				}
+			}
+		})
+	})
+})
+</script>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'index.html' %}
+{% load saltwebtags %}
+{% block context %}
+<div class="alert alert-info" role="alert">
+        <h4>KVM虚拟机安装命令</h4>
+        <p>qemu-img create -f qcow2 /opt/vm/test.qcow2 100G</p>        <p>example: virt-install --vnc  --name=test --ram=512 --vcpus=1  --disk path=/opt/vm/test.qcow2,size=100,format=qcow2 --bridge=br0,model=virtio --mac=54:52:00:19:1F:1D --pxe</p>
+</div>
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">cobbler install记录</div>
+    <div class="panel-body">
+        <form class="navbar-form navbar-right" role="search">
+            <div class="form-group">
+                <input type="text" class="form-control" name="search" placeholder="Search">
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+        <table class="table table-bordered table-hover">
+            <th>添加时间</th>
+            <th>操作人</th>
+            <th>hostname</th>
+            <th>interface</th>
+            <th>ip</th>
+            <th>网关</th>
+            <th>dns</th>
+            <th>mac地址</th>
+            <th>cobbler_profile</th>
+            <th>操作</th>
+            {% for log in pl %}
+            <tr>
+		<td style="display: none" class="id">{{ log.id }}</td>
+                <td>{{ log.date_joined|format_time }}</td>
+                <td>{{ log.user }}</td>
+                <td>{{ log.hostname }}</td>
+                <td>{{ log.interface }}</td>
+                <td>{{ log.ip }}</td>
+                <td>{{ log.gateway }}</td>
+                <td>{{ log.dns }}</td>
+                <td>{{ log.mac }}</td>
+                <td>{{ log.profile }}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+{% include "paginator.html" %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('button.del').on('click',function(e){
+		var id = $(this).parent().parent().find('td.id').text();
+		var currentTr = $(this).parent().parent();
+		$.ajax({
+			type: 'POST',
+			url: '/audit/cobbler_log_del/',
+			timeout: 1000,
+			data:{
+				id : id
+			},
+			success: function(data){
+				$("#ret").attr('class','alert alert-success');
+				$("#ret").text(data);
+				currentTr.remove();
+			},
+           		error: function(xhr,errorText,errorStatus){
+                    		alert(xhr.status+':'+xhr.statusText);
+           		}
+		})
+	})
+})
+</script>
+{% endblock %}

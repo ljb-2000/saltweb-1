@@ -1,0 +1,48 @@
+{% extends 'index.html' %}
+{% block context %}
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">cobbler system列表</div>
+    <div class="panel-body">
+        <table class="table table-bordered table-hover">
+            <th>system name</th>
+            <th>操作</th>
+            {% for system in pl %}
+            <tr>
+                <td class="system_name">{{ system }}</td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+{% include "paginator.html" %}
+    </div>
+</div>
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('button.del').on('click',function(e){
+		var system_name = $(this).parent().parent().find('td.system_name').text();
+		var currentTr = $(this).parent().parent();
+		$.ajax({
+			type: 'POST',
+			url: '/cobbler/cobbler_system_del/',
+			timeout: 1000,
+			data:{
+				system_name : system_name
+			},
+			success: function(data){
+				$("#ret").attr('class','alert alert-success');
+				$("#ret").text(data);
+				currentTr.remove();
+			},
+           		error: function(xhr,errorText,errorStatus){
+                    		alert(xhr.status+':'+xhr.statusText);
+           		}
+		})
+	})
+})
+</script>
+{% endblock %}

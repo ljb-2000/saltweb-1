@@ -1,0 +1,55 @@
+{% extends 'index.html' %}
+{% block context %}
+<div class="alert alert-info" role="alert">
+	<h4>模块: {{module_name}}</h4>
+	<p>模块说明: {{ret.module_info}}</p>
+	<p>参数说明: {{ret.args_info}}[如遇多个参数,请使用","分割]</p>
+</div>
+<form class="form-inline">
+  <div class="form-group">
+    <label class="sr-only" for="saltkey">saltkey</label>
+    <input type="text" class="form-control" id="saltkey" name="saltkey" placeholder="saltkey">
+  </div>
+  <div class="form-group">
+    <label class="sr-only" for="module_name">module_name</label>
+    <input type="text" class="form-control" id="module_name" name="module_name" readonly value="{{module_name}}">
+  </div>
+  <div class="form-group">
+    <label class="sr-only" for="args">args</label>
+    <input type="text" class="form-control" id="args" name="args"  placeholder="{{ret.args_info}}">
+  </div>
+  <button type="button" class="btn btn-default">执行</button>
+</form>
+<br/>
+<div id="result"></div>
+{% endblock %}
+{% block js %}
+<script>
+$(function(){
+	$('button').on('click',function(e){
+		$.ajax({
+			type: 'POST',
+			url: '/salt_module/module_exec_ajax/',
+			dataType: 'json',
+			timeout: 1000,
+			data:{
+				saltkey : $('#saltkey').val(),
+				module_name : $('#module_name').val(),
+				args : $('#args').val()
+			},
+			success: function(data){
+				$('#result').empty();
+				var html = '';
+				$.each(data,function(k,v){
+					html += "<p><strong>saltkey: </strong>"+k+"</p><pre>"+v+"</pre>";
+				});
+				$('#result').html(html)
+			},
+			error: function(XMLHttpRequest,textStatus,errorThrown){
+				alert(errorThrown)
+			}
+		})
+	})
+})
+</script>
+{% endblock %}

@@ -1,8 +1,22 @@
 # coding: utf-8
 from django.core.paginator import Paginator
+from django.core.mail import send_mail
 import urllib,urllib2
 import json
 import os
+import hashlib
+import random
+import datetime
+import ConfigParser
+from user_manager.models import *
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+config = ConfigParser.ConfigParser()
+config.read(os.path.join(BASE_DIR, 'saltweb.conf'))
+
+# mail info
+MAIL_FROM = config.get('mail', 'mail_from')
 
 SALT_URL="https://192.168.38.10:8000"
 SALT_USERNAME='huangchao'
@@ -33,8 +47,13 @@ class SaltApi(object):
 		headers = {'X-Auth-Token' : self.__token, 'Accept' : 'application/json'}
 		if args:
 			for arg in args:
-				format_arg += urllib.urlencode({'arg' : arg})+'&'	
-			r_args = urllib.urlencode(params)+'&'+format_arg.rstrip('&')
+				if type(arg) == list:
+					for list_arg in arg:
+						format_arg += urllib.urlencode({'arg' : list_arg})+'&'
+					r_args = urllib.urlencode(params)+'&'+format_arg.rstrip('&')
+				else:
+					format_arg += urllib.urlencode({'arg' : arg})+'&'	
+				r_args = urllib.urlencode(params)+'&'+format_arg.rstrip('&')
 		else:
 			r_args = urllib.urlencode(params)
 		req = urllib2.Request(url,r_args,headers)
@@ -47,6 +66,19 @@ class SaltApi(object):
 		params = {'client' : 'wheel' , 'fun': 'key.list_all'}
 		ret = self.postRequest(params)
 		return ret
+
+	def delete_key(self,key):
+		self.get_token()
+		params = {'client': 'wheel', 'fun': 'key.delete', 'match': key}
+		ret = self.postRequest(params)
+		return ret['return'][0]['data']['success']
+
+	def accept_key(self,key):
+		'''add saltstack key,return True'''
+		self.get_token()
+		params = {'client': 'wheel', 'fun': 'key.accept', 'match': key}
+		ret = self.postRequest(params)
+		return ret['return'][0]['data']['success']
 
 	def set_file(self,key,source,dest):
 		self.get_token()
@@ -68,6 +100,8 @@ class SaltApi(object):
 		return ret
 
 	def salt_mod(self,key,mod_name,*args):
+		'''Usage: SALTAPI.salt_mod('test_v6_lvs0*','cp.get_file','salt://aa','/tmp/aa')'''
+		'''return: {u'return': [{u'test_v6_lvs02': u'/tmp/aa', u'test_v6_lvs01': u'/tmp/aa'}]}'''
 		self.get_token()
 		params = {'client' : 'local', 'tgt': key, 'fun': mod_name}
 		ret = self.postRequest(params,*args)
@@ -120,3 +154,62 @@ class paging():
                         return self.page
                 else:
                         return self.p.page(self.page).next_page_number()
+
+def require_login(func):
+	'''要求登入的装饰器'''
+	def _deco(request,*args,**kwargs):
+		if not request.session.get('user_id'):
+            		return HttpResponseRedirect('/login')
+        	return func(request,*args,**kwargs)
+    	return _deco
+
+def require_super_user(func):
+	'''要求登入的用户是super用户'''
+	def _deco(request,*args,**kwargs):
+        	if not request.session.get('user_id'):
+            		return HttpResponseRedirect('/login')
+
+        	if request.session.get('role_id',0) != 1:
+            		return HttpResponseRedirect('/')
+        	return func(request,*args,**kwargs)
+    	return _deco
+
+def gen_rand_pwd(num):
+	'''生成随机密码,num为密码位数'''
+	seed = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	pass_list = []
+	for i in range(num):
+        	pass_list.append(random.choice(seed))
+    	passwd = ''.join(pass_list)
+    	return passwd
+
+def md5_crypt(string):
+	'''加密用户密码入数据库'''
+	return hashlib.new('md5',string).hexdigest()
+
+def user_usergroup(uid):
+	'''根据uid查询对应的用户组'''
+	usergroup_list = []
+	user = User.objects.filter(id=uid)
+	if user:
+		user = user[0]
+		group_list = user.group.all()
+		for u_g in group_list:
+			usergroup_list.append(u_g.name)
+	return usergroup_list
+
+def get_session_user(request):
+	'''现在在左侧导航栏的用户信息'''
+	user_id = request.session.get('user_id',0)
+	user = User.objects.filter(id=user_id)
+	if user:
+		user = user[0]
+		username = user.username
+		role = user.role
+		usergroup = user_usergroup(user_id)
+		if role == 'SU':
+			role_name = u'超级管理员'
+		else:
+			role_name = u'普通用户'
+		usergroup_name = ' '.join(usergroup)
+		return [username,role_name,usergroup_name]

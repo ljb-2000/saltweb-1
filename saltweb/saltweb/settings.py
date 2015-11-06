@@ -12,8 +12,19 @@ https://docs.djangoproject.com/en/1.8/ref/settings/
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 import os
+import ConfigParser
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+
+config = ConfigParser.ConfigParser()
+config.read(os.path.join(BASE_DIR, 'saltweb.conf'))
+
+# django_core send_mail confguire
+EMAIL_HOST = config.get('mail', 'email_host')
+EMAIL_PORT = config.get('mail', 'email_port')
+EMAIL_HOST_USER = config.get('mail', 'email_host_user')
+EMAIL_HOST_PASSWORD = config.get('mail', 'email_host_password')
+EMAIL_USE_TLS = config.getboolean('mail', 'email_use_tls')
 
 
 # Quick-start development settings - unsuitable for production
@@ -37,8 +48,13 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'user_manager',
     'kvm_manager',
     'asset',
+    'saltkey_manager',
+    'salt_module',
+    'cobbler',
+    'audit',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -91,7 +107,7 @@ DATABASES = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 

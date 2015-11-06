@@ -1,6 +1,6 @@
 {% extends 'index.html' %}
 {% block context %}
-<div id="ret" role="alert"></div>
+<div id="result"></div>
 <div class="panel panel-default">
     <div class="panel-heading">宿主机{{ saltkey }}: KVM虚拟机管理列表</div>
     <div class="panel-body">
@@ -15,21 +15,115 @@
             <th>虚拟机名</th>
             <th>操作</th>
 	    {% for host,state in saltapi_ret.items %}
-            <tr>
-                <td>{{ state }}</td>
-                <td>{{ host }}</td>
+            <tr saltkey={{ saltkey }}>
+                <td class="state">{{ state }}</td>
+                <td class="v_name">{{ host }}</td>
                 <td>
-                    <button type="button" class="btn btn-success btn-xs edit">开启</button>
-                    <button type="button" class="btn btn-warning btn-xs del">关闭</button>
-                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
-                    <button type="button" class="btn btn-info btn-xs del">详情</button>
-                    <button type="button" class="btn btn-primary btn-xs del">xml查看</button>
+                    <button type="button" class="btn btn-success btn-xs start">开启</button>
+                    <button type="button" class="btn btn-danger btn-xs stop">关闭</button>
+                    <button type="button" class="btn btn-info btn-xs info" data-toggle="modal" data-target="#infoModal">详情</button>
+                    <a href="/kvm_manager/libvirt_manager/virtual_xmldown/?saltkey={{ saltkey }}&v_name={{ host }}" class="btn btn-primary btn-xs">xml文件下载</a>
                 </td>
             </tr>
 	   {% endfor %}
         </table>
     </div>
 </div>
+<!-- Modal -->
+<div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">详情</h4>
+      </div>
+      <div class="modal-body">
+        <div id="info_list"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--end Modal-->
 {% endblock %}
 {% block js %}
+<script type="application/javascript">
+$(function(){
+            $('button.start').on('click',function() {
+                var saltkey = $(this).parent().parent().attr("saltkey");
+                var v_name = $(this).parent().parent().find('td.v_name').text();
+                var $state = $(this).parent().parent().find('td.state');
+                $.ajax({
+                    type: 'POST',
+                    url: '/kvm_manager/libvirt_manager/virtual_start/',
+                    timeout: 1000,
+                    data: {
+                        saltkey: saltkey,
+                        v_name: v_name
+                    },
+                    success: function (data) {
+                        if (data == 'True') {
+			    $state.text("running");
+                            $("#result").html("<div class=alert-success>" + v_name + " start success</div>")
+                        } else {
+                            $("#result").html("<div class=alert-danger>" + v_name + " start failed: " + data + "</div>")
+                        }
+                    },
+                    error: function (xhr, errorText, errorStatus) {
+                        $("#result").html("<div class=alert-danger>Error: " + xhr.status + " " + xhr.statusText + "</div>");
+                    }
+                })
+            })
+
+            $('button.stop').on('click',function() {
+                var saltkey = $(this).parent().parent().attr("saltkey");
+                var v_name = $(this).parent().parent().find('td.v_name').text();
+		var $state = $(this).parent().parent().find('td.state');
+                $.ajax({
+                    type: 'POST',
+                    url: '/kvm_manager/libvirt_manager/virtual_stop/',
+                    timeout: 1000,
+                    data: {
+                        saltkey: saltkey,
+                        v_name: v_name
+                    },
+                    success: function (data) {
+                        if (data == 'True') {
+			    $state.text("shutdown");
+                            $("#result").html("<div class=alert-success>" + v_name + " stop success</div>")
+                        } else {
+                            $("#result").html("<div class=alert-danger>" + v_name + " stop failed: " + data + "</div>")
+                        }
+                    },
+                    error: function (xhr, errorText, errorStatus) {
+                        $("#result").html("<div class=alert-danger>Error: " + xhr.status + " " + xhr.statusText + "</div>");
+                    }
+                })
+            })
+
+        $('button.info').on('click',function(){
+                var saltkey = $(this).parent().parent().attr("saltkey");
+                var v_name = $(this).parent().parent().find('td.v_name').text();
+                $.ajax({
+                        type: 'GET',
+                        url: '/kvm_manager/libvirt_manager/virtual_info/',
+                        timeout: 1000,
+                        data:{
+                                saltkey: saltkey,
+				v_name: v_name
+                        },
+                        success: function(data){
+				$("#info_list").html("<pre>"+data+"</pre>");
+                        },
+                        error:function(xhr,errorText,errorStatus){
+				$('#info_list').text('Error'+':'+xhr.status+' '+xhr.statusText);
+                        },
+                        complete: function(XMLHttpRequest,status){
+                                if (status == 'timeout'){
+					$("#info_list").text('请求超时');
+                                }
+                        }
+               })
+        })
+})
+</script>
 {% endblock %}
