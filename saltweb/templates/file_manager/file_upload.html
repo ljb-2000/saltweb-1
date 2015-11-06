@@ -1,13 +1,19 @@
 {% extends 'index.html' %}
 {% load saltwebtags %}
 {% block context %}
-<div class="demo-box">  
-    <input id="file_upload" type="file" name="Filedata">  
-    <p><a href="javascript:$('#file_upload').uploadifyUpload()">上传图片</a>  
-    <a href="javascript:$('#file_upload').uploadifyClearQueue()">取消上传</a>  
-    </p>  
-    <p><span id="id_span_msg"></span></p>
-</div>  
+<div class="panel panel-default">
+	<div class="panel-heading">文件上传</div>
+	<div class="panel-body">
+		<div class="demo-box">  
+   			<input id="file_upload" type="file" name="Filedata">  
+			<hr/>
+        		<p>
+            			<a href="javascript:$('#file_upload').uploadify('upload')" class="btn btn-primary">上传</a> 
+       			</p>
+    			<div id="id_span_msg"></div>
+		</div> 
+	</div>
+</div>
 {% endblock %}
 {% block js %}
 <script type="text/javascript">
@@ -16,28 +22,15 @@ $(function(){
 		'swf' : '/static/img/uploadify.swf',
 		//后台处理页面
 		'uploader' : '/file_manager/upload_script/',
-		'cancelImg' : '/static/img/uploadify-cancel.png',
 		//按钮显示文件
 		'buttonText' : '选择文件',
 		//设置允许多文件上传
 		'multi' : true,
 		//限制上传的大小
-		'sizeLimit' : 10240000,
-    		'onInit': function () {},  
-    		'onError' : function (event,ID,fileObj,errorObj) {  
-            		$('#id_span_msg').html("上传失败，错误码:"+errorObj.type+" "+errorObj.info);  
-        	},  
-    		'onSelect': function (e, queueId, fileObj) {  
-        		$('#id_span_msg').html("");  
-    		},  
-    		'onCancel' : function(event,ID,fileObj,data) {  
-      			$.post("/delete_uploadfile/", { delete_file: file_name } );  
-      			file_name='';  
-    		},  
-    		'onComplete': function(event, ID, fileObj, response, data) {  
-        		var result = eval ("(" + response + ")");  
-        		file_name=result.save_name;  
-    		} 
+		'fileSizeLimit' : '10MB',
+		'onUploadComplete' : function(file) {
+			$('#id_span_msg').append("<p class=bg-success>"+file.name+"上传成功</p>");
+		}
 	});
 });
 </script>
