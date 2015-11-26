@@ -1,0 +1,71 @@
+{% extends 'index.html' %}
+{% load saltwebtags %}
+{% block context %}
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+	<div class="panel-heading">文件上传列表</div>
+	<div class="panel-body">
+        <table class="table table-bordered table-hover">
+            <th>文件名</th>
+            <th>操作</th>
+            {% for file in pl %}
+            <tr>
+                <td class="filename">{{ file }}</td>
+                <td>
+                    <button type="button" class="btn btn-primary btn-xs send">发送至salt-master</button>
+                    <button type="button" class="btn btn-danger btn-xs del">删除</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+{% include "paginator.html" %}
+	</div>
+</div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript">
+$(function(){
+        $('button.del').on('click',function(e){
+                var filename = $(this).parent().parent().find('td.filename').text();
+                var currentTr = $(this).parent().parent();
+                $.ajax({
+                        type: 'POST',
+                        url: '/file_manager/file_del/',
+                        timeout: 1000,
+                        data:{
+                                filename : filename
+                        },
+                        success: function(data){
+                                $("#ret").attr('class','alert alert-success');
+                                $("#ret").text(data);
+                                currentTr.remove();
+                        },
+                        error: function(xhr,errorText,errorStatus){
+                                alert(xhr.status+':'+xhr.statusText);
+                        }
+                })
+        })
+
+        $('button.send').on('click',function(e){
+                var filename = $(this).parent().parent().find('td.filename').text();
+                var currentTr = $(this).parent().parent();
+                $.ajax({
+                        type: 'POST',
+                        url: '/file_manager/file_send/',
+                        timeout: 1000,
+                        data:{
+                                filename : filename
+                        },
+                        success: function(data){
+                                $("#ret").attr('class','alert alert-success');
+                                $("#ret").text(data);
+                                currentTr.remove();
+                        },
+                        error: function(xhr,errorText,errorStatus){
+                                alert(xhr.status+':'+xhr.statusText);
+                        }
+                })
+        })
+})
+</script>
+{% endblock %}

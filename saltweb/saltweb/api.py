@@ -1,4 +1,5 @@
 # coding: utf-8
+from django.http import HttpResponseRedirect
 from django.core.paginator import Paginator
 from django.core.mail import send_mail
 import urllib,urllib2
@@ -42,18 +43,10 @@ class SaltApi(object):
 		self.__token = ret['return'][0]['token'] 
 	
 	def postRequest(self,params,*args):
-		format_arg = ''
 		url = self.__url.rstrip('/')
 		headers = {'X-Auth-Token' : self.__token, 'Accept' : 'application/json'}
 		if args:
-			for arg in args:
-				if type(arg) == list:
-					for list_arg in arg:
-						format_arg += urllib.urlencode({'arg' : list_arg})+'&'
-					r_args = urllib.urlencode(params)+'&'+format_arg.rstrip('&')
-				else:
-					format_arg += urllib.urlencode({'arg' : arg})+'&'	
-				r_args = urllib.urlencode(params)+'&'+format_arg.rstrip('&')
+			r_args = urllib.urlencode(params)+'&'+urllib.urlencode({'arg':args[0]},doseq=True)
 		else:
 			r_args = urllib.urlencode(params)
 		req = urllib2.Request(url,r_args,headers)
@@ -80,27 +73,14 @@ class SaltApi(object):
 		ret = self.postRequest(params)
 		return ret['return'][0]['data']['success']
 
-	def set_file(self,key,source,dest):
-		self.get_token()
-		headers = {'X-Auth-Token' : self.__token, 'Accept' : 'application/json'}
-		params = {'client' : 'local', 'tgt' : key, 'fun' : 'cp.get_url'}
-		ret = self.postRequest(params,source,dest)
-		return ret
-
 	def lookup_jid(self,jid):
 		self.get_token()
 		params = {'client' : 'runner' , 'fun' : 'jobs.lookup_jid' , 'jid' : jid}
 		ret = self.postRequest(params)
 		return ret
 
-	def cmd(self,key,command):
-		self.get_token()
-		params = {'client' : 'local' , 'tgt' : key, 'fun': 'cmd.run'}
-		ret = self.postRequest(params,command)
-		return ret
-
 	def salt_mod(self,key,mod_name,*args):
-		'''Usage: SALTAPI.salt_mod('test_v6_lvs0*','cp.get_file','salt://aa','/tmp/aa')'''
+		'''Usage: SALTAPI.salt_mod('test_v6_lvs0*','cp.get_file',['salt://aa','/tmp/aa'])'''
 		'''return: {u'return': [{u'test_v6_lvs02': u'/tmp/aa', u'test_v6_lvs01': u'/tmp/aa'}]}'''
 		self.get_token()
 		params = {'client' : 'local', 'tgt': key, 'fun': mod_name}

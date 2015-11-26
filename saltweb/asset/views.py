@@ -12,22 +12,24 @@ def add_host(request):
                 saltkey = request.POST.get('saltkey')
                 hostname = request.POST.get('hostname')
                 ip = request.POST.get('ip')
-                hosttype = request.POST.get('hosttype')
+                kernel = request.POST.get('kernel')
                 os = request.POST.get('os')
                 cpunum = request.POST.get('cpunum')
                 cputype = request.POST.get('cputype')
                 memory = request.POST.get('memory')
+                disk = request.POST.get('disk')
                 comment = request.POST.get('comment')
                 try:
                         host = Host(
                                 saltkey=saltkey,
                                 hostname=hostname,
                                 ip=ip,
-                                hosttype=hosttype,
+                                kernel=kernel,
                                 os=os,
                                 cpunum=cpunum,
                                 cputype=cputype,
                                 memory=memory,
+                                disk=disk,
                                 comment=comment
                         )
                         host.save()
@@ -180,3 +182,68 @@ def storage_del_ajax(request):
 	except Exception as e:
 		ret = u'主机 %s 删除失败, %s' %(ip,e)
 	return HttpResponse(ret)
+
+def add_host_service(request):
+	'''添加host接口'''
+	if request.method == "GET":
+		return HttpResponse("Error: Please Use Post Method")
+	else:
+		if not request.POST.get("saltkey",""):
+			return HttpResponse("saltkey is null")
+		if not request.POST.get("hostname",""):
+			return HttpResponse("hostname is null")
+		if not request.POST.get("ip",""):
+			return HttpResponse("ip is null")
+		if not request.POST.get("kernel",""):
+			return HttpResponse("kernel is null")
+		if not request.POST.get("os",""):
+			return HttpResponse("os is null")
+		if not request.POST.get("cpunum",""):
+			return HttpResponse("cpunum is null")
+		if not request.POST.get("cputype",""):
+			return HttpResponse("cputype is null")
+		if not request.POST.get("memory",""):
+			return HttpResponse("memory is null")
+		if not request.POST.get("disk",""):
+			return HttpResponse("disk is null")
+		saltkey = request.POST.get("saltkey")	
+		hostname = request.POST.get("hostname")	
+		ip = request.POST.get("ip")	
+		kernel = request.POST.get("kernel")	
+		os = request.POST.get("os")	
+		cpunum = request.POST.get("cpunum")	
+		cputype = request.POST.get("cputype")	
+		memory = request.POST.get("memory")
+		disk = request.POST.get("disk")
+		comment = request.POST.get("comment","")
+		selected = Host.objects.filter(ip=ip)
+		if selected:
+			'''如果存在记录'''
+			selected.update(
+				saltkey=saltkey,
+				hostname=hostname,
+				kernel=kernel,
+				os=os,
+				cpunum=cpunum,
+				cputype=cputype,
+                                memory=memory,
+                                disk=disk,
+                                comment=comment
+			)
+			return HttpResponse("update host success")
+		else:
+			host = Host(
+				saltkey=saltkey,
+				hostname=hostname,
+				ip=ip,
+				kernel=kernel,
+				os=os,
+				cpunum=cpunum,
+				cputype=cputype,
+				memory=memory,
+				disk=disk,
+				comment=comment
+			)
+			host.save()
+			return HttpResponse("add host success")
+	

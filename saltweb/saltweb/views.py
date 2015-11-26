@@ -5,8 +5,10 @@ from django.shortcuts import render_to_response
 from saltweb.api import *
 from saltweb.dashboard import *
 from user_manager.models import *
+from audit.models import *
 import json
 
+@require_login
 def index(request):
 	username,role_name,usergroup_name = get_session_user(request)
     	weeks = list_week(7)
@@ -30,6 +32,9 @@ def login(request):
             if md5_crypt(password) == user.password:
                 request.session['user_id'] = user.id
                 user_filter.update(last_login=datetime.datetime.now())
+		'''用户登录记录'''
+		remote_ip = request.META['REMOTE_ADDR']
+		LoginLog.objects.create(login_time=datetime.datetime.now(),username=username,ip=remote_ip)
                 if user.role == 'SU':
                     request.session['role_id'] = 1
                 else:

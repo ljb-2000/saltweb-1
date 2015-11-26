@@ -3,8 +3,10 @@ from django.db.models import  Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from salt_module.models import *
+from audit.models import *
 from saltweb.api import *
 import json
+import datetime
 
 def add_modules(request):
 	username,role_name,usergroup_name = get_session_user(request)
@@ -68,9 +70,11 @@ def module_del_ajax(request):
 	return HttpResponse(ret)
 
 def module_exec_ajax(request):
+	username,role_name,usergroup_name = get_session_user(request)
 	saltkey = request.POST.get('saltkey')
 	module_name = request.POST.get('module_name')
 	args = request.POST.get('args').split(',')
+	'''执行命令审计'''
+	CommandLog.objects.create(exec_time=datetime.datetime.now(),username=username,exec_moudle=module_name,exec_args=request.POST.get('args'))
 	ret = SALTAPI.salt_mod(saltkey,module_name,args)['return'][0]
-	print ret
 	return HttpResponse(json.dumps(ret))

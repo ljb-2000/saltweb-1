@@ -68,8 +68,8 @@
         <div id="file_manager" class="collapse list-group">
         {% endblock %}
             <a href="/file_manager/file_upload" class="list-group-item"><small>文件上传</small></a>
-            <a href="#" class="list-group-item"><small>文件上传列表</small></a>
-            <a href="#" class="list-group-item"><small>文件分发</small></a>
+            <a href="/file_manager/upload_list" class="list-group-item"><small>文件上传列表</small></a>
+            <a href="/file_manager/file_push" class="list-group-item"><small>文件分发</small></a>
         </div>
     </li>
     <li>
@@ -77,9 +77,9 @@
         {% block nav8 %}
         <div id="audit" class="collapse list-group">
         {% endblock %}
-            <a href="#" class="list-group-item"><small>命令审计</small></a>
+            <a href="/audit/command_log" class="list-group-item"><small>命令审计</small></a>
             <a href="/audit/cobbler_log" class="list-group-item"><small>装机记录</small></a>
-            <a href="#" class="list-group-item"><small>用户登入记录</small></a>
+            <a href="/audit/login_log" class="list-group-item"><small>用户登入记录</small></a>
         </div>
     </li>
   </ul>

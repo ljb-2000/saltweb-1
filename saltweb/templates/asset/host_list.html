@@ -14,11 +14,12 @@
             <th>saltkey</th>
             <th>hostname</th>
             <th>ip</th>
-            <th>主机类型</th>
+            <th>内核版本</th>
             <th>操作系统</th>
             <th>CPU个数</th>
             <th>CPU类型</th>
             <th>内存大小M</th>
+            <th>硬盘信息</th>
             <th>备注</th>
             <th>操作</th>
             {% for host in pl %}
@@ -26,14 +27,14 @@
                 <td>{{ host.saltkey }}</td>
                 <td>{{ host.hostname }}</td>
                 <td class="ip">{{ host.ip }}</td>
-                <td>{{ host.hosttype }}</td>
+                <td>{{ host.kernel }}</td>
                 <td>{{ host.os }}</td>
                 <td>{{ host.cpunum }}</td>
                 <td>{{ host.cputype }}</td>
                 <td>{{ host.memory }}</td>
+                <td>{{ host.disk }}</td>
                 <td>{{ host.comment }}</td>
                 <td>
-                    <a href="/kvm_manager/host_edit/?ip={{ host.ip }}" class="btn btn-success btn-xs">编辑</a>
                     <button type="button" class="btn btn-danger btn-xs del">删除</button>
                 </td>
             </tr>

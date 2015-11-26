@@ -3,6 +3,7 @@ from . import views
 
 urlpatterns = [
     url(r'^add_host/$', views.add_host),
+    url(r'^add_host_service/$', views.add_host_service),
     url(r'^add_network/$', views.add_network),
     url(r'^add_storage/$', views.add_storage),
     url(r'^host_list/$', views.host_list),

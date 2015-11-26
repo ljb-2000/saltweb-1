@@ -6,11 +6,13 @@ from cobbler_api import *
 from saltweb.api import paging,get_session_user
 from cobbler.models import *
 import datetime
+#import virtinst.util
 
 def install(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	if request.method == 'GET':
 		profile_list = u_cobbler_api.seach_profile()
+		#mac = virtinst.util.randomMAC(type="qemu")
 	else:
 		profile_list = u_cobbler_api.seach_profile()
 		hostname = request.POST.get('hostname').strip()
