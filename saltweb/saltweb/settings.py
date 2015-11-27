@@ -55,6 +55,7 @@ INSTALLED_APPS = (
     'salt_module',
     'cobbler',
     'audit',
+    'perm',
 )
 
 MIDDLEWARE_CLASSES = (

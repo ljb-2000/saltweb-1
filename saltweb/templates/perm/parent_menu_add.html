@@ -1,0 +1,30 @@
+{% extends 'index.html' %}
+{% block context %}
+{% if error %}
+<div class="alert alert-danger" role="alert">{{error}}</div>
+{% endif %}
+{% if result %}
+<div class="alert alert-success" role="alert">{{result}}</div>
+{% endif %}
+<div class="panel panel-default">
+    <div class="panel-heading">添加父菜单</div>
+    <div class="panel-body">
+        <form class="form-horizontal" method="post" action="">
+            <div class="form-group">
+                <label for="name" class="col-md-2 control-label">父菜单名</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="name" name="name" placeholder="请填写父菜单名">
+                </div>
+            </div>
+            <hr/>
+            <div class="row">
+                <div class="col-md-10 col-md-offset-2">
+                    <button type="submit" class="btn btn-primary">提交</button>
+                    <button type="reset" class="btn btn-success">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+

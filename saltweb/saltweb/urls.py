@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^cobbler/', include('cobbler.urls')),
     url(r'^file_manager/', include('file_manager.urls')),
     url(r'^audit/', include('audit.urls')),
+    url(r'^perm/', include('perm.urls')),
 ]

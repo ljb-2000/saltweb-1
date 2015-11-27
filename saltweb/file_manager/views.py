@@ -6,8 +6,11 @@ import os,json
 from ssh_api import *
 from saltweb.api import *
 
+@require_login
 def file_upload(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "file_manager"
 	return render_to_response('file_manager/file_upload.html',locals())
 
 def uploadify_script(request):  
@@ -28,8 +31,11 @@ def uploadify_script(request):
 		f.close()
 	return HttpResponse("upload success")
 
+@require_login
 def upload_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "file_manager"
 	file_list = os.listdir(Local_Dir)
         '''分页'''
         try:
@@ -51,8 +57,10 @@ def upload_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('file_manager/upload_list.html',locals())
 
+@require_login
 def file_del(request):
 	filename = request.POST.get('filename')
+	nav_name = "file_manager"
 	try:
 		r_filename = os.path.join(Local_Dir,filename)
 		os.system('rm -rf %s' %r_filename)
@@ -60,6 +68,7 @@ def file_del(request):
 	except Exception as e:
 		return HttpResponse('%s del failed,%s' %(filename,e))
 
+@require_login
 def file_send(request):
 	filename = request.POST.get('filename')
 	try:
@@ -70,9 +79,12 @@ def file_send(request):
 		ret = "%s send failed,%s" %(filename,e)
 	return HttpResponse(ret)
 
+@require_login
 def file_push(request):
+	username,role_name,usergroup_name = get_session_user(request)	
+	session_role_id = request.session['role_id']
+	nav_name = "file_manager"
 	if request.method == "GET":
-		username,role_name,usergroup_name = get_session_user(request)	
 		remote_file_list = s.exec_command_list('ls %s' %saltstack_remote_dir)
 	else:
 		username,role_name,usergroup_name = get_session_user(request)

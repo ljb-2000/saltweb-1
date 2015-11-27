@@ -3,12 +3,15 @@
 from django.db.models import  Q
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
-from saltweb.api import paging,get_session_user
+from saltweb.api import *
 from cobbler.models import *
 from audit.models import *
 
+@require_super_user
 def cobbler_log(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "audit"
         search = request.GET.get('search','')
         if search:
                 cobbler_list = Cobbler_Log.objects.filter(Q(hostname__icontains=search) | Q(user__icontains=search)).order_by('-date_joined')
@@ -34,6 +37,7 @@ def cobbler_log(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('audit/cobbler_log.html',locals())
 
+@require_super_user
 def cobbler_log_del(request):
 	id = request.POST.get('id')
 	try:
@@ -43,9 +47,11 @@ def cobbler_log_del(request):
                 ret = u'记录 删除失败: %s' %(e)
         return HttpResponse(ret)
 	
-
+@require_super_user
 def login_log(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "audit"
 	search = request.GET.get('search','')
 	if search:
 		loginlog = LoginLog.objects.filter(Q(username__icontains=search))
@@ -71,8 +77,11 @@ def login_log(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('audit/login_log.html',locals())
 
+@require_super_user
 def command_log(request):
         username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "audit"
         search = request.GET.get('search','')
         if search:
                 commandlog = CommandLog.objects.filter(Q(username__icontains=search)|Q(exec_moudle__icontains=search))

@@ -1,0 +1,25 @@
+{% extends 'index.html' %}
+{% load saltwebtags %}
+{% block context %}
+<div id="ret" role="alert"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">用户权限分配</div>
+    <div class="panel-body">
+	<ul class="nav nav-pills nav-stacked">
+		{% for parent_menu in parent_menus %}
+			<li role="presentation"><a href="#">{{parent_menu.name}}</a></li>
+		{% endfor %}
+	</ul>
+    </div>
+</div>
+			<div><div class="huangchao"></div></div>
+{% endblock %}
+{% block js %}
+<script type="text/javascript" language="javascript">
+$(function(){
+	$("li a").on('click',function(e){
+		var parent_menu_name = $(this).text();
+	})
+})
+</script>
+{% endblock %}

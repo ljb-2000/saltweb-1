@@ -11,4 +11,5 @@ urlpatterns = [
     url(r'^user_edit/$', views.user_edit),
     url(r'^usergroup_edit/$', views.usergroup_edit),
     url(r'^g_user_list_ajax/$', views.g_user_list_ajax),
+    url(r'^user_perm_edit/$', views.user_perm_edit),
 ]

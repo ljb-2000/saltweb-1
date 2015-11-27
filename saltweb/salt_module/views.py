@@ -8,8 +8,11 @@ from saltweb.api import *
 import json
 import datetime
 
+@require_super_user
 def add_modules(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "salt_module"
 	if request.method == 'POST':
 		module_name = request.POST.get('module_name')
 		module_info = request.POST.get('module_info')
@@ -26,8 +29,11 @@ def add_modules(request):
 			error = u'模块: %s添加失败: %s' %(module_name,e)
 	return render_to_response('salt_module/add_modules.html',locals())
 
+@require_login
 def module_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "salt_module"
 	search = request.GET.get('search','')
         if search:
                 modules = Module.objects.filter(Q(module_name__icontains=search))
@@ -53,13 +59,17 @@ def module_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('salt_module/module_list.html',locals())
 
+@require_login
 def module_exec(request):
         username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "salt_module"
         if request.method == 'GET':
 		module_name = request.GET.get('module_name')
 		ret = Module.objects.get(module_name=module_name)
 	return render_to_response('salt_module/module_exec.html',locals())
 
+@require_super_user
 def module_del_ajax(request):
 	module_name = request.POST.get('module_name')
 	try:
@@ -69,6 +79,7 @@ def module_del_ajax(request):
 		ret = u'模块: %s删除失败: %s' %(module_name,e)
 	return HttpResponse(ret)
 
+@require_login
 def module_exec_ajax(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	saltkey = request.POST.get('saltkey')

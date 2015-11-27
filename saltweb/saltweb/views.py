@@ -11,6 +11,7 @@ import json
 @require_login
 def index(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
     	weeks = list_week(7)
     	week_counts = list_week_count()
     	fun_counts = fun_count()
@@ -50,8 +51,10 @@ def logout(request):
     	request.session.delete()
     	return HttpResponseRedirect('/login')
 
+@require_login
 def jid_result(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
 	if request.method == 'GET':
 		jid = request.GET.get('jid','')
 		rows = get_jids(jid)
@@ -66,8 +69,10 @@ def jid_result(request):
 			error = "Jid无效,请检测是否正确"
 	return render_to_response('jid_result.html',locals())
 
+@require_login
 def job_list_all(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
 	search = request.GET.get('search','')
 	if search:
 		results = list_job_search(search)
@@ -92,8 +97,10 @@ def job_list_all(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('job_list_all.html',locals())
 
+@require_login
 def job_list_failed(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
         search = request.GET.get('search','')
         if search:
                 results = list_job_failed_search(search)
@@ -118,8 +125,10 @@ def job_list_failed(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('job_list_failed.html',locals())
 
+@require_login
 def job_list_state(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
         search = request.GET.get('search','')
         if search:
                 results = list_job_state_search(search)
@@ -144,8 +153,10 @@ def job_list_state(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('job_list_state.html',locals())
 
+@require_login
 def job_list_highstate(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
         search = request.GET.get('search','')
         if search:
                 results = list_job_highstate_search(search)

@@ -1,4 +1,5 @@
 from django.db import models
+from perm.models import *
 
 class UserGroup(models.Model):
         name = models.CharField(max_length=80,unique=True)
@@ -21,6 +22,7 @@ class User(models.Model):
         is_active = models.BooleanField(default=True)
         last_login = models.DateTimeField(null=True)
         date_joined = models.DateTimeField(null=True)
+	perm = models.ManyToManyField(Sub_Menu)
 
         def __unicode__(self):
                 return self.username

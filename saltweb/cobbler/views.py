@@ -3,13 +3,16 @@
 from django.http import HttpResponse
 from django.shortcuts import render_to_response
 from cobbler_api import *
-from saltweb.api import paging,get_session_user
+from saltweb.api import *
 from cobbler.models import *
 import datetime
 #import virtinst.util
 
+@require_login
 def install(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "cobbler"
 	if request.method == 'GET':
 		profile_list = u_cobbler_api.seach_profile()
 		#mac = virtinst.util.randomMAC(type="qemu")
@@ -41,8 +44,11 @@ def install(request):
 			error = ret
 	return render_to_response('cobbler/install.html',locals())
 
+@require_login
 def install_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "cobbler"
 	system_list = u_cobbler_api.seach_system()
         '''分页'''
         try:
@@ -64,6 +70,7 @@ def install_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('cobbler/install_list.html',locals())
 
+@require_super_user
 def cobbler_system_del(request):
 	system_name = request.POST.get('system_name')
 	ret = u_cobbler_api.del_system(system_name)

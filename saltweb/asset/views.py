@@ -6,8 +6,11 @@ from django.shortcuts import render_to_response
 from asset.models import *
 from saltweb.api import *
 
+@require_super_user
 def add_host(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "asset"
         if request.method == 'POST':
                 saltkey = request.POST.get('saltkey')
                 hostname = request.POST.get('hostname')
@@ -38,8 +41,11 @@ def add_host(request):
                         error = u'%s -- %s添加失败: %s' %(saltkey,ip,e)
         return render_to_response('asset/add_host.html',locals())
 
+@require_super_user
 def add_network(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "asset"
         if request.method == 'POST':
                 ip = request.POST.get('ip')
                 device = request.POST.get('device')
@@ -56,8 +62,11 @@ def add_network(request):
                         error = u'%s -- %s添加失败: %s' %(device,ip,e)
         return render_to_response('asset/add_network.html',locals())
 
+@require_super_user
 def add_storage(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "asset"
         if request.method == 'POST':
                 ip = request.POST.get('ip')
                 device = request.POST.get('device')
@@ -74,9 +83,11 @@ def add_storage(request):
                         error = u'%s -- %s添加失败: %s' %(device,ip,e)
         return render_to_response('asset/add_storage.html',locals())
 
-
+@require_login
 def host_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	nav_name = "asset"
+	session_role_id = request.session['role_id']
         search = request.GET.get('search','')
         if search:
                 hosts = Host.objects.filter(Q(saltkey__icontains=search) | Q(hostname__icontains=search) | Q(ip__icontains=search))
@@ -102,8 +113,11 @@ def host_list(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('asset/host_list.html',locals())
 
+@require_login
 def network_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "asset"
         search = request.GET.get('search','')
         if search:
                 network = Network.objects.filter(Q(device__icontains=search) | Q(ip__icontains=search))
@@ -129,8 +143,11 @@ def network_list(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('asset/network_list.html',locals())
 
+@require_login
 def storage_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "asset"
         search = request.GET.get('search','')
         if search:
                 storage = Storage.objects.filter(Q(device__icontains=search) | Q(ip__icontains=search))
@@ -156,6 +173,7 @@ def storage_list(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('asset/storage_list.html',locals())
 
+@require_super_user
 def host_del_ajax(request):
 	ip = request.POST.get('ip')
 	try:
@@ -165,6 +183,7 @@ def host_del_ajax(request):
 		ret = u'主机 %s 删除失败, %s' %(ip,e)
 	return HttpResponse(ret)
 
+@require_super_user
 def network_del_ajax(request):
 	ip = request.POST.get('ip')
 	try:
@@ -174,6 +193,7 @@ def network_del_ajax(request):
 		ret = u'主机 %s 删除失败, %s' %(ip,e)
 	return HttpResponse(ret)
 
+@require_super_user
 def storage_del_ajax(request):
 	ip = request.POST.get('ip')
 	try:

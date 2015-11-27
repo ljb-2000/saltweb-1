@@ -5,8 +5,11 @@ from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from saltweb.api import *
 
+@require_login
 def accepted_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "saltkey_manager"
 	accepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions']
         '''分页'''
         try:
@@ -28,8 +31,11 @@ def accepted_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('saltkey_manager/accepted_list.html',locals())
 
+@require_login
 def unaccepted_list(request):
         username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "saltkey_manager"
         unaccepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions_pre']
         '''分页'''
         try:
@@ -51,6 +57,7 @@ def unaccepted_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('saltkey_manager/unaccepted_list.html',locals())
 
+@require_super_user
 def accept_key_ajax(request):
 	saltkey = request.POST.get('saltkey')
 	try:
@@ -60,6 +67,7 @@ def accept_key_ajax(request):
                 ret = u'key: %s 认证失败: %s' %(saltkey,e)
         return HttpResponse(ret)
 
+@require_super_user
 def delete_key_ajax(request):
 	saltkey = request.POST.get('saltkey')
         try:

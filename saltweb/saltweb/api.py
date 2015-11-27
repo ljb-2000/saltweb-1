@@ -144,7 +144,7 @@ def require_login(func):
     	return _deco
 
 def require_super_user(func):
-	'''要求登入的用户是super用户'''
+	'''要求登入的用户是super用户,superuser session_role_id=1 other session_role_id=0'''
 	def _deco(request,*args,**kwargs):
         	if not request.session.get('user_id'):
             		return HttpResponseRedirect('/login')

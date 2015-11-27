@@ -5,11 +5,14 @@ from django.http import HttpResponse,HttpResponseRedirect
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from user_manager.models import *
+from perm.models import *
 from saltweb.api import *
 
-
+@require_super_user
 def user_add(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
 	if request.method == 'POST':
 		username = request.POST.get('username','')
 		password = gen_rand_pwd(8)
@@ -62,8 +65,11 @@ def user_add(request):
 		groupname = UserGroup.objects.all()
 	return render_to_response('user_manager/user_add.html',locals())
 
+@require_super_user
 def usergroup_add(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
 	if request.method == 'POST':
 		groupname = request.POST.get('groupname')
 		comment = request.POST.get('comment')
@@ -78,9 +84,11 @@ def usergroup_add(request):
 			error = u'添加用户组 %s 失败 %s' %(groupname,e)
 	return render_to_response('user_manager/usergroup_add.html',locals())
 
-		
+@require_super_user
 def user_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
 	search = request.GET.get('search','')
         if search:
                 users = User.objects.filter(Q(username__icontains=search)).order_by('-date_joined')
@@ -106,8 +114,11 @@ def user_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('user_manager/user_list.html',locals())
 
+@require_super_user
 def usergroup_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
         search = request.GET.get('search','')
         if search:
                 groups = UserGroup.objects.filter(Q(name__icontains=search))
@@ -133,6 +144,7 @@ def usergroup_list(request):
                 pr = p.pr()[page-9:page+8]
 	return render_to_response('user_manager/usergroup_list.html',locals())
 
+@require_super_user
 def user_del_ajax(request):
 	username = request.POST.get('username')
 	try:
@@ -142,6 +154,7 @@ def user_del_ajax(request):
 		ret = u'用户删除失败, %s' %e
 	return HttpResponse(ret)
 
+@require_super_user
 def usergroup_del_ajax(request):
 	groupname = request.POST.get('groupname')
 	try:
@@ -151,9 +164,11 @@ def usergroup_del_ajax(request):
 		ret = u'用户组删除失败: %s' %e
 	return HttpResponse(ret)
 	
-
+@require_super_user
 def user_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
 	if request.method == 'GET':
 		id = request.GET.get('id','')
 		result = User.objects.get(id=id)
@@ -179,8 +194,11 @@ def user_edit(request):
 			)
 		return HttpResponseRedirect('/user_manager/user_list/')
 
+@require_super_user
 def usergroup_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
 	if request.method == 'GET':
 		gid = request.GET.get('gid','')
 		result = UserGroup.objects.get(id=gid)
@@ -208,6 +226,7 @@ def usergroup_edit(request):
 				user_group[0].user_set.remove(remove_user)
 		return HttpResponseRedirect('/user_manager/usergroup_list/')
 
+@require_super_user
 def g_user_list_ajax(request):
 	'''查询用户组所属的用户'''
 	groupname = request.GET.get('groupname','')
@@ -215,3 +234,13 @@ def g_user_list_ajax(request):
 	userlist = group.user_set.all()
 	u = [ user.username for user in userlist ]
 	return HttpResponse(json.dumps(u))
+
+@require_super_user
+def user_perm_edit(request):
+	username,role_name,usergroup_name = get_session_user(request)
+	session_role_id = request.session['role_id']
+	nav_name = "user_manager"
+	if request.method == "GET":
+		userid = request.GET.get("id")
+		parent_menus = Parent_Menu.objects.all()
+	return render_to_response('user_manager/user_perm_edit.html',locals())
