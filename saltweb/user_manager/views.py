@@ -241,6 +241,35 @@ def user_perm_edit(request):
 	session_role_id = request.session['role_id']
 	nav_name = "user_manager"
 	if request.method == "GET":
-		userid = request.GET.get("id")
-		parent_menus = Parent_Menu.objects.all()
+		uid = request.GET.get("id")
+		perm_id = u_submenu_id(request)
+		tree = parent_sub_tree()
+	else:
+		uid = request.POST.get('uid')
+		sub_ids =request.POST.getlist('sub_menus')
+		user_obj = User.objects.get(id=int(uid))
+		'''先删除uid所有的submenus'''
+		user_perms = user_obj.perm.all()
+		for user_perm in user_perms:
+			user_obj.perm.remove(user_perm)
+		'''再将submenus授权为uid'''
+		for sub_id in sub_ids:
+			submenu_obj = Sub_Menu.objects.get(id=int(sub_id))
+			user_obj.perm.add(submenu_obj)
+		ret = u"授权完成,重新登入生效"
 	return render_to_response('user_manager/user_perm_edit.html',locals())
+
+def parent_sub_tree():
+	'''遍历出父目录与子目录的树状结构'''
+	parent_menus_list = Parent_Menu.objects.all()
+	tree_dict = {}
+	for parent_menu in parent_menus_list:
+		tree_dict[parent_menu.name] = parent_menu.sub_menu_set.all
+	return tree_dict
+
+def u_submenu_id(request):
+	'''根据用户的id,查询出对应的子菜单id'''
+	u_obj = User.objects.get(id=request.GET.get("id"))
+	u_submenus = u_obj.perm.all()
+	u_sub_id = [ int(u_submenu.id) for u_submenu in u_submenus ]
+	return u_sub_id

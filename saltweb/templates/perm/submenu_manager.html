@@ -31,11 +31,18 @@
       </div>
       <div class="modal-body">
         <form class="form-horizontal" method="post" action="">
+	    <input type="hidden" name="parentmenuname" value="{{parentmenu_name}}">
             <div class="form-group">
                 <label for="submenuname" class="col-md-2 control-label">子菜单名</label>
                 <div class="col-md-10">
                     <input type="text" class="form-control" id="submenuname" name="submenuname" placeholder="请填写子菜单名">
-		    <input type="hidden" name="parentmenuname" value="{{parentmenu_name}}">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="suburl" class="col-md-2 control-label">URL</label>
+                <div class="col-md-10">
+                    <input type="text" class="form-control" id="suburl" name="suburl" placeholder="请填
+写子菜单URL">
                 </div>
             </div>
             <hr/>

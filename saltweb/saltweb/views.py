@@ -5,6 +5,7 @@ from django.shortcuts import render_to_response
 from saltweb.api import *
 from saltweb.dashboard import *
 from user_manager.models import *
+from perm.models import *
 from audit.models import *
 import json
 
@@ -16,6 +17,7 @@ def index(request):
     	week_counts = list_week_count()
     	fun_counts = fun_count()
     	rows = list_jobs()
+	nav = perm_nav(request)
     	return render_to_response('index.html',locals())
 
 def login(request):
@@ -180,3 +182,15 @@ def job_list_highstate(request):
         else:
                 pr = p.pr()[page-9:page+8]
         return render_to_response('job_list_highstate.html',locals())
+
+def perm_nav(request):
+	'''根据放入session的uid查询出用户的菜单权限'''
+        uid = request.session['user_id']
+        u_obj = User.objects.get(id=uid)
+        submenus_list = u_obj.perm.all()
+        perm_dict = {}
+        perm_list = []
+        for submenu_list in submenus_list:             
+               perm_list.append(submenu_list)
+               perm_dict[submenu_list.parent_menu.name] = perm_list
+        return perm_dict

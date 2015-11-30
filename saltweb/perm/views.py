@@ -81,8 +81,9 @@ def submenu_manager(request):
 	else:
 		parentmenuname = request.POST.get('parentmenuname')
 		submenuname = request.POST.get('submenuname')
+		suburl = request.POST.get('suburl')
 		p_obj = Parent_Menu.objects.get(name=parentmenuname)
-		Sub_Menu.objects.create(name=submenuname,parent_menu=p_obj)
+		Sub_Menu.objects.create(name=submenuname,parent_menu=p_obj,url=suburl)
 		return HttpResponseRedirect('/perm/submenu_manager/?name=%s' %parentmenuname)
 
 @require_super_user
