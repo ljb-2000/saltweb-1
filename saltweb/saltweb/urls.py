@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^job_list_failed/$', views.job_list_failed),
     url(r'^job_list_state/$', views.job_list_state),
     url(r'^job_list_highstate/$', views.job_list_highstate),
+    url(r'^init_superuser/$', views.init_superuser),
     url(r'^asset/', include('asset.urls')),
     url(r'^kvm_manager/', include('kvm_manager.urls')),
     url(r'^user_manager/', include('user_manager.urls')),

@@ -9,7 +9,7 @@ from saltweb.api import *
 def accepted_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "saltkey_manager"
+	nav = perm_nav(request)
 	accepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions']
         '''分页'''
         try:
@@ -35,7 +35,7 @@ def accepted_list(request):
 def unaccepted_list(request):
         username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "saltkey_manager"
+	nav = perm_nav(request)
         unaccepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions_pre']
         '''分页'''
         try:

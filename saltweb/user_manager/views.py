@@ -12,7 +12,7 @@ from saltweb.api import *
 def user_add(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	if request.method == 'POST':
 		username = request.POST.get('username','')
 		password = gen_rand_pwd(8)
@@ -69,7 +69,7 @@ def user_add(request):
 def usergroup_add(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	if request.method == 'POST':
 		groupname = request.POST.get('groupname')
 		comment = request.POST.get('comment')
@@ -88,7 +88,7 @@ def usergroup_add(request):
 def user_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	search = request.GET.get('search','')
         if search:
                 users = User.objects.filter(Q(username__icontains=search)).order_by('-date_joined')
@@ -118,7 +118,7 @@ def user_list(request):
 def usergroup_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 groups = UserGroup.objects.filter(Q(name__icontains=search))
@@ -168,7 +168,7 @@ def usergroup_del_ajax(request):
 def user_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		id = request.GET.get('id','')
 		result = User.objects.get(id=id)
@@ -198,7 +198,7 @@ def user_edit(request):
 def usergroup_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		gid = request.GET.get('gid','')
 		result = UserGroup.objects.get(id=gid)
@@ -239,7 +239,7 @@ def g_user_list_ajax(request):
 def user_perm_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "user_manager"
+	nav = perm_nav(request)
 	if request.method == "GET":
 		uid = request.GET.get("id")
 		perm_id = u_submenu_id(request)

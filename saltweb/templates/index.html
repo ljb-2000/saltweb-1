@@ -97,7 +97,6 @@
                     var option = {
 			title:{
 				text: 'Salt Job一周数据统计',
-				subtext: 'salt-master: 192.168.38.10',
 				x: 'center'
 			},
                         tooltip:{
@@ -150,7 +149,6 @@
                     var option = {
                         title:{
                                 text: 'Salt Fun一周运行比例',
-                                subtext: 'salt-master: 192.168.38.10',
 				x: 'center'
                         },
                         tooltip:{
@@ -182,5 +180,14 @@
         );
     </script>
     {% endblock %}
+<!--
+    <script type="application/javascript">
+	$(function(){
+		$("div.collapse a").on('click',function(e){
+			$(this).parent().addClass("in");
+		})
+	})
+    </script>
+-->
   </body>
 </html>

@@ -10,7 +10,7 @@ from saltweb.api import *
 def parent_menu_add(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "perm-manager"
+	nav = perm_nav(request)
 	if request.method == 'POST':
 		name = request.POST.get('name')
 		try:
@@ -24,7 +24,7 @@ def parent_menu_add(request):
 def parent_menu_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "perm-manager"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 menus = Parent_Menu.objects.filter(Q(name__icontains=search))
@@ -54,7 +54,7 @@ def parent_menu_list(request):
 def submenu_manager(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "perm-manager"
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		parentmenu_name = request.GET.get('name')
 		p = Parent_Menu.objects.get(name=parentmenu_name)
@@ -89,10 +89,19 @@ def submenu_manager(request):
 @require_super_user
 def submenu_del_ajax(request):
 	submenu_name = request.POST.get('submenu_name')
-	print submenu_name
 	try:
 		sub_obj = Sub_Menu.objects.get(name=submenu_name)
 		sub_obj.delete()
 		return HttpResponse(u'子菜单删除成功')
 	except Exception as e:
 		return HttpResponse(u"子菜单删除失败,%s" %e)
+
+@require_super_user
+def parentmenu_del_ajax(request):
+	parentmenu_name = request.POST.get('parentmenu_name')
+	try:
+		parentmenu_obj = Parent_Menu.objects.get(name=parentmenu_name)
+		parentmenu_obj.delete()
+                return HttpResponse(u'父菜单删除成功')
+        except Exception as e:
+                return HttpResponse(u"父菜单删除失败,%s" %e)

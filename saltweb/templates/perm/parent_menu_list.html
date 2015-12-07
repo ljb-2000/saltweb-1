@@ -16,7 +16,7 @@
             <th>操作</th>
             {% for menu in menus %}
             <tr>
-                <td>{{ menu.name }}</td>
+                <td class="perm_name">{{ menu.name }}</td>
                 <td>
                     <a href="/perm/submenu_manager/?name={{ menu.name }}" class="btn btn-success btn-xs">管理子菜单</a>
                     <button type="button" class="btn btn-danger btn-xs del">删除</button>
@@ -32,14 +32,14 @@
 <script>
 $(function(){
 	$('button.del').on('click',function(e){
-		var username = $(this).parent().parent().find('td.username').text();
+		var parentmenu_name = $(this).parent().parent().find('td.perm_name').text();
 		var currentTr = $(this).parent().parent();
 		$.ajax({
 			type: 'POST',
-			url: '/user_manager/user_del_ajax/',
+			url: '/perm/parentmenu_del_ajax/',
 			timeout: 1000,
 			data:{
-				username : username
+				parentmenu_name : parentmenu_name
 			},
 			success: function(data){
 				$("#ret").attr('class','alert alert-success');

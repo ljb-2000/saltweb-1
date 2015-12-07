@@ -13,11 +13,12 @@ import json
 def index(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
+	print nav
     	weeks = list_week(7)
     	week_counts = list_week_count()
     	fun_counts = fun_count()
     	rows = list_jobs()
-	nav = perm_nav(request)
     	return render_to_response('index.html',locals())
 
 def login(request):
@@ -57,6 +58,7 @@ def logout(request):
 def jid_result(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		jid = request.GET.get('jid','')
 		rows = get_jids(jid)
@@ -75,6 +77,7 @@ def jid_result(request):
 def job_list_all(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
 	search = request.GET.get('search','')
 	if search:
 		results = list_job_search(search)
@@ -103,6 +106,7 @@ def job_list_all(request):
 def job_list_failed(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 results = list_job_failed_search(search)
@@ -131,6 +135,7 @@ def job_list_failed(request):
 def job_list_state(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 results = list_job_state_search(search)
@@ -159,6 +164,7 @@ def job_list_state(request):
 def job_list_highstate(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 results = list_job_highstate_search(search)
@@ -183,14 +189,27 @@ def job_list_highstate(request):
                 pr = p.pr()[page-9:page+8]
         return render_to_response('job_list_highstate.html',locals())
 
-def perm_nav(request):
-	'''根据放入session的uid查询出用户的菜单权限'''
-        uid = request.session['user_id']
-        u_obj = User.objects.get(id=uid)
-        submenus_list = u_obj.perm.all()
-        perm_dict = {}
-        perm_list = []
-        for submenu_list in submenus_list:             
-               perm_list.append(submenu_list)
-               perm_dict[submenu_list.parent_menu.name] = perm_list
-        return perm_dict
+def init_superuser(request):
+	'''初始化超级用户'''
+	if not request.GET.get('username',''):
+		return HttpResponse('username is null')
+	if not request.GET.get('password',''):
+		return HttpResponse('password is null')
+	username = request.GET.get('username')
+	password = request.GET.get('password')
+	try:
+		u_obj = User.objects.filter(username=username)
+		if u_obj:
+			return HttpResponse('%s add failed,%s is exist' %(username,username))
+		else:
+                        User.objects.create(
+                                username=username,
+                                password=md5_crypt(password),
+                                email='%s@example.com' %username,
+                                role='SU',
+                                is_active='1',
+                                date_joined=datetime.datetime.now()
+                        )
+                        return HttpResponse('%s add success,pwd: %s' %(username,password))
+	except Exception as e:
+		return HttpResponse('add failed: %s' %e)

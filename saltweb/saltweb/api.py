@@ -19,9 +19,9 @@ config.read(os.path.join(BASE_DIR, 'saltweb.conf'))
 # mail info
 MAIL_FROM = config.get('mail', 'mail_from')
 
-SALT_URL="https://192.168.38.10:8000"
-SALT_USERNAME='huangchao'
-SALT_PASSWORD='huang7361623'
+SALT_URL = config.get('salt-api', 'salt_url')
+SALT_USERNAME = config.get('salt-api', 'salt_username') 
+SALT_PASSWORD = config.get('salt-api','salt_password')
 
 class SaltApi(object):
 	__token = ''
@@ -193,3 +193,16 @@ def get_session_user(request):
 			role_name = u'普通用户'
 		usergroup_name = ' '.join(usergroup)
 		return [username,role_name,usergroup_name]
+
+def perm_nav(request):
+        '''根据放入session的uid查询出用户的菜单权限'''
+        uid = request.session['user_id']
+        u_obj = User.objects.get(id=uid)
+        submenus_list = u_obj.perm.all()
+        perm_dict = {}
+        for submenu_list in submenus_list:
+		if perm_dict.has_key(submenu_list.parent_menu.name):
+			perm_dict[submenu_list.parent_menu.name].append(submenu_list)
+		else:
+			perm_dict[submenu_list.parent_menu.name] = [submenu_list]
+        return perm_dict

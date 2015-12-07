@@ -10,7 +10,7 @@ from saltweb.api import *
 def add_host(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "asset"
+	nav = perm_nav(request)
         if request.method == 'POST':
                 saltkey = request.POST.get('saltkey')
                 hostname = request.POST.get('hostname')
@@ -45,7 +45,7 @@ def add_host(request):
 def add_network(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "asset"
+	nav = perm_nav(request)
         if request.method == 'POST':
                 ip = request.POST.get('ip')
                 device = request.POST.get('device')
@@ -66,7 +66,7 @@ def add_network(request):
 def add_storage(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "asset"
+	nav = perm_nav(request)
         if request.method == 'POST':
                 ip = request.POST.get('ip')
                 device = request.POST.get('device')
@@ -86,8 +86,8 @@ def add_storage(request):
 @require_login
 def host_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
-	nav_name = "asset"
 	session_role_id = request.session['role_id']
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 hosts = Host.objects.filter(Q(saltkey__icontains=search) | Q(hostname__icontains=search) | Q(ip__icontains=search))
@@ -117,7 +117,7 @@ def host_list(request):
 def network_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "asset"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 network = Network.objects.filter(Q(device__icontains=search) | Q(ip__icontains=search))
@@ -147,7 +147,7 @@ def network_list(request):
 def storage_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "asset"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 storage = Storage.objects.filter(Q(device__icontains=search) | Q(ip__icontains=search))

@@ -13,7 +13,7 @@ import json
 def add_host(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "kvm-manager"
+	nav = perm_nav(request)
 	if request.method == 'POST':
 		saltkey = request.POST.get('saltkey')
 		hostname = request.POST.get('hostname')
@@ -37,7 +37,7 @@ def add_host(request):
 def host_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "kvm-manager"
+	nav = perm_nav(request)
 	search = request.GET.get('search','')
 	if search:
 		hosts = Host.objects.filter(Q(saltkey__icontains=search) | Q(hostname__icontains=search) | Q(ip__icontains=search))
@@ -67,7 +67,7 @@ def host_list(request):
 def host_edit(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "kvm-manager"
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		ip = request.GET.get('ip')
 		db_result = Host.objects.filter(ip=ip)[0]
@@ -108,7 +108,7 @@ def host_del_ajax(request):
 def libvirt_manager(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "kvm-manager"
+	nav = perm_nav(request)
 	saltkey = request.GET.get('saltkey')
 	saltapi_ret = SALTAPI.salt_mod(saltkey,'virt.vm_state').get('return')[0].get(saltkey)
 	return render_to_response('kvm_manager/libvirt_manager.html',locals())

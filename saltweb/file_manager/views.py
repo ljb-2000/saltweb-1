@@ -10,7 +10,7 @@ from saltweb.api import *
 def file_upload(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "file_manager"
+	nav = perm_nav(request)
 	return render_to_response('file_manager/file_upload.html',locals())
 
 def uploadify_script(request):  
@@ -35,7 +35,7 @@ def uploadify_script(request):
 def upload_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "file_manager"
+	nav = perm_nav(request)
 	file_list = os.listdir(Local_Dir)
         '''分页'''
         try:
@@ -60,7 +60,6 @@ def upload_list(request):
 @require_login
 def file_del(request):
 	filename = request.POST.get('filename')
-	nav_name = "file_manager"
 	try:
 		r_filename = os.path.join(Local_Dir,filename)
 		os.system('rm -rf %s' %r_filename)
@@ -83,7 +82,7 @@ def file_send(request):
 def file_push(request):
 	username,role_name,usergroup_name = get_session_user(request)	
 	session_role_id = request.session['role_id']
-	nav_name = "file_manager"
+	nav = perm_nav(request)
 	if request.method == "GET":
 		remote_file_list = s.exec_command_list('ls %s' %saltstack_remote_dir)
 	else:

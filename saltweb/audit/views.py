@@ -11,7 +11,7 @@ from audit.models import *
 def cobbler_log(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "audit"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 cobbler_list = Cobbler_Log.objects.filter(Q(hostname__icontains=search) | Q(user__icontains=search)).order_by('-date_joined')
@@ -51,7 +51,7 @@ def cobbler_log_del(request):
 def login_log(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "audit"
+	nav = perm_nav(request)
 	search = request.GET.get('search','')
 	if search:
 		loginlog = LoginLog.objects.filter(Q(username__icontains=search))
@@ -81,7 +81,7 @@ def login_log(request):
 def command_log(request):
         username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "audit"
+	nav = perm_nav(request)
         search = request.GET.get('search','')
         if search:
                 commandlog = CommandLog.objects.filter(Q(username__icontains=search)|Q(exec_moudle__icontains=search))

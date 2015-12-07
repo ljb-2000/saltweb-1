@@ -12,7 +12,7 @@ import datetime
 def install(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "cobbler"
+	nav = perm_nav(request)
 	if request.method == 'GET':
 		profile_list = u_cobbler_api.seach_profile()
 		#mac = virtinst.util.randomMAC(type="qemu")
@@ -48,7 +48,7 @@ def install(request):
 def install_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "cobbler"
+	nav = perm_nav(request)
 	system_list = u_cobbler_api.seach_system()
         '''分页'''
         try:

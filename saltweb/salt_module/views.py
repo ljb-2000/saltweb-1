@@ -12,7 +12,7 @@ import datetime
 def add_modules(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "salt_module"
+	nav = perm_nav(request)
 	if request.method == 'POST':
 		module_name = request.POST.get('module_name')
 		module_info = request.POST.get('module_info')
@@ -33,7 +33,7 @@ def add_modules(request):
 def module_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "salt_module"
+	nav = perm_nav(request)
 	search = request.GET.get('search','')
         if search:
                 modules = Module.objects.filter(Q(module_name__icontains=search))
@@ -63,7 +63,7 @@ def module_list(request):
 def module_exec(request):
         username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
-	nav_name = "salt_module"
+	nav = perm_nav(request)
         if request.method == 'GET':
 		module_name = request.GET.get('module_name')
 		ret = Module.objects.get(module_name=module_name)
