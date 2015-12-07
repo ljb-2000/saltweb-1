@@ -206,3 +206,11 @@ def perm_nav(request):
 		else:
 			perm_dict[submenu_list.parent_menu.name] = [submenu_list]
         return perm_dict
+
+def randomMAC():
+	'''随机生成KVM MAC'''
+	mac = [ 0x52, 0x54, 0x00,
+		random.randint(0x00, 0x7f),
+		random.randint(0x00, 0xff),
+		random.randint(0x00, 0xff) ]
+	return ':'.join(map(lambda x: "%02x" %x,mac))

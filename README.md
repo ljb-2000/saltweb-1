@@ -2,6 +2,11 @@ Introduction
 -----------------------------------------
 saltweb项目使用salt-api来是实现saltstack的dashboard项目
 
+配置文件
+----------------------------------------
+my.cnf: django mysql配置文件
+saltweb.conf: 各种api中的账户密码
+
 开发环境
 -----------------------------------------
 Python: 2.7
@@ -12,23 +17,65 @@ Install dependency
 -----------------------------------------
 export WORKSPACE=/opt/saltweb
 mkdir -p $WORKSPACE
-cd $WORKSPACE && git clone https://github.com
-yum install -y python-virtualenv python-virtinst
+cd $WORKSPACE && git clone https://github.com/hctech/saltweb.git
+yum install -y python-virtualenv mysql-server mysql-devel
 cd $WORKSPACE/saltweb
 virtualenv ./env
-./env/bin/pip install -r pip_requirements.txt -i http://pypi.douban.com/simple
+./env/bin/pip install -r requirements.txt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+chmod 777 saltweb/upload/
 
 Init database
 -----------------------------------------
-./env/bin/python manage.py makemigrations
-./env/bin/python manage.py migrate
+mysql -e 'create database salt;'
+mysql -e 'grant all on salt.* to salt@localhost identified by "salt";'
+mysql -e 'grant all on salt.* to salt@"%" identified by "salt";'
+mysql -e 'create database saltweb DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;'
+mysql -e 'grant all on saltweb.* to salt@localhost identified by "salt";'
+mysql -e 'grant all on saltweb.* to salt@"%" identified by "salt";'
+
+USE `salt`;
+
+--
+-- Table structure for table `jids`
+--
+
+DROP TABLE IF EXISTS `jids`;
+CREATE TABLE `jids` (
+  `jid` varchar(255) NOT NULL,
+  `load` mediumtext NOT NULL,
+  UNIQUE KEY `jid` (`jid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Table structure for table `salt_returns`
+--
+
+DROP TABLE IF EXISTS `salt_returns`;
+CREATE TABLE `salt_returns` (
+  `fun` varchar(50) NOT NULL,
+  `jid` varchar(255) NOT NULL,
+  `return` mediumtext NOT NULL,
+  `id` varchar(255) NOT NULL,
+  `success` varchar(10) NOT NULL,
+  `full_ret` mediumtext NOT NULL,
+  `alter_time` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  KEY `id` (`id`),
+  KEY `jid` (`jid`),
+  KEY `fun` (`fun`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+cd $WORKSPACE/saltweb
+./env/bin/python saltweb/manage.py makemigrations
+./env/bin/python saltweb/manage.py migrate
 
 Start
 -----------------------------------------
-./env/bin/python manage.py runserver 0.0.0.0:80
+cd $WORKSPACE/saltweb
+./env/bin/python saltweb/manage.py runserver 0.0.0.0:80
 
 
 初始化超级用户
 -----------------------------------------
-http://172.16.30.219/init_superuser/?username=root&password=123456
-python-virtinst: Usge MAC = virtinst.util.randomMAC(type="qemu")
+http://xx/init_superuser/?username=root&password=123456

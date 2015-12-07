@@ -15,7 +15,7 @@ def install(request):
 	nav = perm_nav(request)
 	if request.method == 'GET':
 		profile_list = u_cobbler_api.seach_profile()
-		#mac = virtinst.util.randomMAC(type="qemu")
+		mac = randomMAC()
 	else:
 		profile_list = u_cobbler_api.seach_profile()
 		hostname = request.POST.get('hostname').strip()
