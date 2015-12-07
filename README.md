@@ -69,6 +69,10 @@ cd $WORKSPACE/saltweb
 python saltweb/manage.py makemigrations
 python saltweb/manage.py migrate
 
+Usage python2.6
+python saltweb/manage.py sqlall
+python saltweb/manage.py syncdb
+
 Start
 -----------------------------------------
 cd $WORKSPACE/saltweb
