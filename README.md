@@ -18,10 +18,9 @@ Install dependency
 export WORKSPACE=/opt/saltweb
 mkdir -p $WORKSPACE
 cd $WORKSPACE && git clone https://github.com/hctech/saltweb.git
-yum install -y python-virtualenv mysql-server mysql-devel
+yum install -y mysql-server mysql-devel
 cd $WORKSPACE/saltweb
-virtualenv ./env
-./env/bin/pip install -r requirements.txt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
+pip install -r requirements.txt -i http://pypi.douban.com/simple --trusted-host pypi.douban.com
 chmod 777 saltweb/upload/
 
 Init database
@@ -67,15 +66,48 @@ CREATE TABLE `salt_returns` (
 
 
 cd $WORKSPACE/saltweb
-./env/bin/python saltweb/manage.py makemigrations
-./env/bin/python saltweb/manage.py migrate
+python saltweb/manage.py makemigrations
+python saltweb/manage.py migrate
 
 Start
 -----------------------------------------
 cd $WORKSPACE/saltweb
-./env/bin/python saltweb/manage.py runserver 0.0.0.0:80
+python saltweb/manage.py runserver 0.0.0.0:80
 
 
 初始化超级用户
 -----------------------------------------
 http://xx/init_superuser/?username=root&password=123456
+
+
+Django+Apache
+-----------------------------------------
+yum install -y httpd mod_wsgi
+
+vim /etc/httpd/conf.d/wsgi.conf 
+
+==========wsgi.conf============
+LoadModule wsgi_module modules/mod_wsgi.so
+
+
+WSGIScriptAlias / "/opt/saltweb/saltweb/saltweb/saltweb/wsgi.py"
+WSGIPythonPath /opt/saltweb/saltweb/saltweb
+
+<VirtualHost *:80>
+        ServerName www.saltweb.com
+        <Directory "/opt/saltweb/saltweb/saltweb">
+                <Files wsgi.py>
+                        Order deny,allow
+                        Allow from all
+                </Files>
+        </Directory>
+        Alias /static/ /opt/saltweb/saltweb/saltweb/static/
+        <Directory "/static/">
+                Order allow,deny
+                Options Indexes
+                Allow from all
+                IndexOptions FancyIndexing
+        </Directory>
+</VirtualHost>
+============================
+
