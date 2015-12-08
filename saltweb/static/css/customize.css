@@ -26,3 +26,17 @@
 .navbar-right {
 	margin-right: 5px;
 }
+
+/*autocomplete 可滚动jieg*/
+.ui-autocomplete {
+    max-height: 200px;
+    overflow-y: auto;
+    /* 防止水平滚动条 */
+    overflow-x: hidden;
+}
+/* IE 6 不支持 max-height
+* 我们使用 height 代替，但是这会强制菜单总是显示为那个高度
+*/
+* html .ui-autocomplete {
+    height: 100px;
+}

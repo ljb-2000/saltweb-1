@@ -64,6 +64,7 @@ def module_exec(request):
         username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
 	nav = perm_nav(request)
+	auto_complete = listkey()
         if request.method == 'GET':
 		module_name = request.GET.get('module_name')
 		ret = Module.objects.get(module_name=module_name)

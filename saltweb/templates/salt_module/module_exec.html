@@ -50,6 +50,14 @@ $(function(){
 			}
 		})
 	})
+
+        //autocomplete
+        {% autoescape off %} 
+        var auto = {{auto_complete}};
+        {% endautoescape %}
+        $("#saltkey").autocomplete({
+                source: auto
+        });
 })
 </script>
 {% endblock %}

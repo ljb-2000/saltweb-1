@@ -4,13 +4,24 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render_to_response
 from saltweb.api import *
+import re
 
 @require_login
 def accepted_list(request):
 	username,role_name,usergroup_name = get_session_user(request)
 	session_role_id = request.session['role_id']
 	nav = perm_nav(request)
-	accepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions']
+	search = request.GET.get('search','')
+	if search:
+		accepted_key = []
+		accepted_key_list = SALTAPI.list_all_key()['return'][0]['data']['return']['minions']
+		for key in accepted_key_list:
+			match = re.search(search,key)
+			if match:
+				accepted_key.append(match.group())
+		print accepted_key
+	else:
+		accepted_key = SALTAPI.list_all_key()['return'][0]['data']['return']['minions']
         '''分页'''
         try:
                 page = int(request.GET.get('page','1'))
