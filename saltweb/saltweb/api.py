@@ -83,7 +83,7 @@ class SaltApi(object):
 		'''Usage: SALTAPI.salt_mod('test_v6_lvs0*','cp.get_file',['salt://aa','/tmp/aa'])'''
 		'''return: {u'return': [{u'test_v6_lvs02': u'/tmp/aa', u'test_v6_lvs01': u'/tmp/aa'}]}'''
 		self.get_token()
-		params = {'client' : 'local', 'tgt': key, 'fun': mod_name}
+		params = {'client':'local', 'tgt':key, 'fun':mod_name, 'expr_form':'compound'}
 		ret = self.postRequest(params,*args)
 		return ret
 
